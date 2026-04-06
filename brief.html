@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Karat Weekly Brief</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f5f5f4;
+      color: #1c1917;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    header {
+      background: #1c1917;
+      color: #fff;
+      padding: 24px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 { font-size: 20px; font-weight: 600; letter-spacing: -0.3px; }
+    header span { font-size: 13px; color: #a8a29e; }
+
+    nav {
+      background: #292524;
+      padding: 0 40px;
+      display: flex;
+      gap: 0;
+    }
+    nav a {
+      color: #a8a29e;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 10px 16px;
+      border-bottom: 2px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    nav a:hover { color: #fff; }
+    nav a.active { color: #fff; border-bottom-color: #fff; }
+
+    .container { max-width: 960px; margin: 0 auto; padding: 32px 24px; }
+
+    /* ── Section styles ── */
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #a8a29e;
+      margin: 32px 0 12px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      border: 1px solid #e7e5e4;
+      padding: 20px 24px;
+      margin-bottom: 12px;
+    }
+
+    .card h3 {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      color: #78716c;
+      margin-bottom: 14px;
+    }
+
+    /* ── Top priorities ── */
+    .priorities-card {
+      background: #fff;
+      border: 1.5px solid #1c1917;
+      border-radius: 10px;
+      padding: 24px 28px;
+      margin-bottom: 32px;
+    }
+    .priorities-card h2 {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #1c1917;
+      margin-bottom: 16px;
+    }
+    .priority-item {
+      display: flex;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid #f5f5f4;
+      font-size: 14px;
+      align-items: flex-start;
+    }
+    .priority-item:last-child { border-bottom: none; }
+    .priority-num {
+      font-size: 12px;
+      font-weight: 700;
+      color: #a8a29e;
+      min-width: 18px;
+      padding-top: 2px;
+    }
+
+    /* ── Meetings table ── */
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      text-align: left;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #78716c;
+      padding: 0 12px 10px 0;
+      border-bottom: 1px solid #e7e5e4;
+    }
+    tbody td {
+      padding: 10px 12px 10px 0;
+      border-bottom: 1px solid #f5f5f4;
+      vertical-align: top;
+      font-size: 14px;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    .prep-yes { color: #dc2626; font-weight: 600; font-size: 13px; }
+    .prep-no  { color: #a8a29e; font-size: 13px; }
+
+    /* ── Day sections ── */
+    .day-card {
+      background: #fff;
+      border-radius: 10px;
+      border: 1px solid #e7e5e4;
+      padding: 20px 24px;
+      margin-bottom: 12px;
+    }
+    .day-header {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1c1917;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #f5f5f4;
+    }
+
+    /* ── Checkable items ── */
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 7px 0;
+      border-bottom: 1px solid #f5f5f4;
+      cursor: pointer;
+      user-select: none;
+    }
+    .check-item:last-child { border-bottom: none; }
+
+    .cb {
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid #d6d3d1;
+      border-radius: 3px;
+      flex-shrink: 0;
+      margin-top: 3px;
+      transition: background 0.15s, border-color 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cb svg { display: none; }
+
+    .check-item.done .cb {
+      background: #16a34a;
+      border-color: #16a34a;
+    }
+    .check-item.done .cb svg { display: block; }
+
+    .check-item .label {
+      font-size: 14px;
+      color: #44403c;
+      flex: 1;
+      transition: color 0.15s;
+    }
+    .check-item.done .label {
+      text-decoration: line-through;
+      color: #a8a29e;
+    }
+
+    .check-item .tag {
+      font-size: 12px;
+      font-weight: 600;
+      color: #78716c;
+      background: #f5f5f4;
+      padding: 1px 7px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+    .check-item.done .tag { opacity: 0.5; }
+
+    .check-item .reason {
+      font-style: italic;
+      color: #78716c;
+    }
+
+    /* ── Subsection headers inside cards ── */
+    .subsection {
+      margin-top: 16px;
+    }
+    .subsection:first-child { margin-top: 0; }
+    .subsection h4 {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      color: #a8a29e;
+      margin-bottom: 8px;
+    }
+    .subsection.urgent h4 { color: #dc2626; }
+
+    /* ── Reminders ── */
+    .reminder {
+      font-size: 14px;
+      color: #44403c;
+      padding: 6px 0;
+      border-bottom: 1px solid #f5f5f4;
+      display: flex;
+      gap: 8px;
+    }
+    .reminder:last-child { border-bottom: none; }
+    .reminder::before { content: "·"; color: #d6d3d1; font-weight: 700; }
+
+    footer {
+      text-align: center;
+      padding: 32px;
+      font-size: 12px;
+      color: #a8a29e;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Karat — Weekly Brief</h1>
+  <span>April 6 – 10, 2026 &nbsp;·&nbsp; Jeff Spector</span>
+</header>
+
+<nav>
+  <a href="index.html">Account Review</a>
+  <a href="brief.html" class="active">Weekly Brief</a>
+</nav>
+
+<div class="container">
+
+  <!-- ── TOP PRIORITIES ── -->
+  <div class="priorities-card">
+    <h2>Top Priorities This Week</h2>
+    <div class="priority-item"><span class="priority-num">1</span><span>Citi / Rahul Vaish call — Thursday 9:30am PT. Contract exhausts May 15. Walk in ready to close on bridge 10k @ $250, FY2026 renegotiation structure, and PTS fee inclusion.</span></div>
+    <div class="priority-item"><span class="priority-num">2</span><span>Amex / Ajita meeting — Thursday 1:00pm PT. Three active pilots at risk from IVE supply crunch. Confirm pilot health before the call.</span></div>
+    <div class="priority-item"><span class="priority-num">3</span><span>Steve Bagby (Mastercard) — Tuesday 10:00am PT. No prep in place. Pull brief before the call.</span></div>
+    <div class="priority-item"><span class="priority-num">4</span><span>Colin (Citi) monthly 1:1 — Wednesday 12:00pm PT. First touch since Jeff took exec sponsor role. Arrive with Citi context.</span></div>
+    <div class="priority-item"><span class="priority-num">5</span><span>Jeff Sousa outreach (Wells Fargo). MSA legal cleared most comments April 3. This week is the window before the deal closes.</span></div>
+  </div>
+
+  <!-- ── ACCOUNT MEETINGS THIS WEEK ── -->
+  <div class="section-label">Jeff's Account Meetings This Week</div>
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:160px">When</th>
+          <th>Meeting</th>
+          <th style="width:80px">Account</th>
+          <th style="width:130px">Prep needed?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Mon Apr 6, 9:00am PT</td><td>Citi Account Team Sync (internal)</td><td>Citi</td><td class="prep-yes">Yes — role clarity</td></tr>
+        <tr><td>Mon Apr 6, 1:00pm PT</td><td>Wells Fargo Hurdle Sync (internal)</td><td>Wells Fargo</td><td class="prep-no">No — internal</td></tr>
+        <tr><td>Tue Apr 7, 10:00am PT</td><td>Steve Bagby &lt;&gt; Jeff Spector</td><td>Mastercard</td><td class="prep-yes">Yes — no brief yet</td></tr>
+        <tr><td>Tue Apr 7, 12:30pm PT</td><td>Carol Borowski &lt;&gt; Jeff Spector</td><td>Citizens Bank</td><td class="prep-yes">Yes — pull context</td></tr>
+        <tr><td>Tue Apr 7, 3:30pm PT</td><td>Intro — Steve Turk (JPM CDO) via Mo</td><td>JPMC</td><td class="prep-no">Light — intro, Mo leading</td></tr>
+        <tr><td>Wed Apr 8, 12:00pm PT</td><td>Jeff / Colin monthly 1:1</td><td>Citi</td><td class="prep-yes">Yes — exec rebuild</td></tr>
+        <tr><td>Thu Apr 9, 9:30am PT</td><td>Rahul Vaish + Matt Jones</td><td>Citi</td><td class="prep-yes">Yes — prep doc ✓</td></tr>
+        <tr><td>Thu Apr 9, 1:00pm PT</td><td>Ajita Naik + Amber Simic</td><td>Amex</td><td class="prep-yes">Yes — prep doc ✓</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── MEETING CALENDAR ── -->
+  <div class="section-label">Meeting Calendar — External Only</div>
+
+  <div class="day-card">
+    <div class="day-header">Monday — April 6</div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Amy Coleman — Microsoft — 1:35pm PT</span></div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Venu — 3:00pm PT</span></div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Elisa — 3:45pm PT</span></div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-header">Tuesday — April 7</div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Steve Bagby — Mastercard — 10:00am PT</span></div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Parker Remick & Co. — 10:30am PT</span></div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Carol Borowski — Citizens Bank — 12:30pm PT</span></div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Founder Unite (remote) — 3:00pm PT</span></div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Steve Turk — JPM CDO (intro via Mo) — 3:30pm PT</span></div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-header">Wednesday — April 8</div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Colin Heilman — Citi (monthly 1:1) — 12:00pm PT</span></div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Chris H. — 3:00pm PT</span></div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-header">Thursday — April 9</div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Rahul Vaish + Matt Jones — Citi — 9:30am PT</span></div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Ajita Naik + Amber Simic — Amex — 1:00pm PT</span></div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-header">Friday — April 10</div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Sean K — Sage & Sea Ventures — 11:00am PT</span></div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Olivia Griffian — Serena Ventures — 12:00pm PT</span></div>
+  </div>
+
+  <!-- ── DAILY PRIORITIES ── -->
+  <div class="section-label">Daily Priorities</div>
+
+  <div class="day-card">
+    <div class="day-header">Monday — April 6</div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Citi Account Team Sync (9am PT) — <span class="reason">first tiger team meeting; set exec sponsor vs. operational ownership clearly</span></span></div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Wells Fargo Hurdle Sync (1pm PT) — <span class="reason">confirm what's resolved heading into Sousa outreach</span></span></div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Amy Coleman / Microsoft (1:35pm PT) — <span class="reason">external meeting; note any follow-ups</span></span></div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Send Steve Bagby invite — Duolingo NYC lunch 4/28 — <span class="reason">draft is ready per Adam Ginsburgh</span></span></div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Account review with Amanda (4pm PT) — <span class="reason">prep for the week's account conversations</span></span></div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-header">Tuesday — April 7</div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Steve Bagby / Mastercard (10am PT) — <span class="reason">pull brief beforehand; no prep currently in place</span></span></div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Carol Borowski / Citizens Bank (12:30pm PT) — <span class="reason">pull context; confirm if active deal or prospect</span></span></div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">JPM intro — Steve Turk CDO (3:30pm PT) — <span class="reason">Mo leading; be familiar with JPM prospect status</span></span></div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Jeff Sousa outreach (Wells Fargo) — <span class="reason">legal momentum is high; send today or tomorrow</span></span></div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-header">Wednesday — April 8</div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Colin / Citi monthly 1:1 (12pm PT) — <span class="reason">exec relationship rebuild; arrive with context on integrity crisis, contract, and product asks</span></span></div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Respond to Webflow (Suchitra Hari) — <span class="reason">needs dates for April 13 week; note April 15–16 unavailable (hackathon)</span></span></div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Confirm Travelers AI Advisory coverage — <span class="reason">Linus + Arun; ownership needs to be locked today</span></span></div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-header">Thursday — April 9</div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">HSBC LT Debrief (9am PT) — <span class="reason">flag if supply crunch needs exec decision before Rahul call</span></span></div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Rahul Vaish / Citi (9:30am PT) — <span class="reason">the week's highest-stakes call; close on bridge options and FY2026 renegotiation</span></span></div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Ajita / Amex (1pm PT) — <span class="reason">confirm IVE supply health before this call; speak to pilot status on Agentic AI, B30, Contractor</span></span></div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-header">Friday — April 10</div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Sean K / Sage & Sea Ventures (11am PT) — <span class="reason">investor sync; note any asks or follow-ups</span></span></div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Olivia Griffian / Serena Ventures (12pm PT) — <span class="reason">investor sync; note any asks or follow-ups</span></span></div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">End-of-week wrap — <span class="reason">capture open threads from Citi and Amex calls before the weekend</span></span></div>
+  </div>
+
+  <!-- ── MEETING PREP ── -->
+  <div class="section-label">Meeting Prep Docs & Decks</div>
+  <div class="card">
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label"><strong>Steve Bagby (Mastercard) — Tuesday</strong>: Pull account brief; no briefing in place</span></div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label"><strong>Carol Borowski (Citizens Bank) — Tuesday</strong>: Pull context on relationship and deal status</span></div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label"><strong>Colin / Citi — Wednesday</strong>: Citi context doc — integrity timeline, contract status, Conor coverage plan</span></div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label"><strong>Rahul Vaish / Citi — Thursday</strong>: Prep doc blocked on calendar ✓ — confirm contract options doc is ready</span></div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label"><strong>Ajita / Amex — Thursday</strong>: Prep doc blocked on calendar ✓ — confirm IVE supply status for all three pilots</span></div>
+  </div>
+
+  <!-- ── TO DO ── -->
+  <div class="section-label">To Do</div>
+  <div class="card">
+    <div class="subsection urgent">
+      <h4>❗ Time Sensitive / Urgent</h4>
+      <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Send Steve Bagby invite — Duolingo NYC lunch 4/28 (draft ready per Adam Ginsburgh)</span></div>
+      <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Respond to Webflow / Suchitra Hari — dates for April 13 week (note: April 15–16 unavailable)</span></div>
+      <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Designate Conor operational replacement on Citi — Linus to own; needs to happen Monday</span></div>
+      <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Confirm PTS fee inclusion in Citi renegotiation — Jeff / Nathan / Linus must decide before Thursday</span></div>
+      <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Get integrity product ask dates from Dana / Arun — Christopher Ahrendt is waiting</span></div>
+    </div>
+    <div class="subsection">
+      <h4>Other Tasks</h4>
+      <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Jeff Sousa outreach (Wells Fargo EVP, COO Technology)</span></div>
+      <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Connect Matt Bannish with Patrick Wu — Citi EBR data setup</span></div>
+      <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Travelers EBR deck owner — Linus to designate before end of week</span></div>
+      <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Start MOR data pulling <span class="tag">Overdue</span></span></div>
+    </div>
+    <div class="subsection">
+      <h4>To Review</h4>
+      <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Draft email in inbox (April 1) — review and send or discard</span></div>
+      <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">2026 H1 Eng Resource Allocations — linked in Monday Eng Capacity Planning</span></div>
+    </div>
+  </div>
+
+  <!-- ── EMAILS ── -->
+  <div class="section-label">Emails to Send</div>
+  <div class="card">
+    <div class="subsection urgent">
+      <h4>❗ Time Sensitive</h4>
+      <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Webflow / Suchitra Hari — dates for week of April 13 (no April 15–16)</span></div>
+    </div>
+    <div class="subsection">
+      <h4>Emails in Drafts</h4>
+      <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Steve Bagby — Duolingo NYC lunch 4/28 invite</span></div>
+      <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Draft from April 1 — review status</span></div>
+    </div>
+    <div class="subsection">
+      <h4>To Draft</h4>
+      <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Jeff Sousa (Wells Fargo EVP) — exec relationship outreach</span></div>
+    </div>
+  </div>
+
+  <!-- ── NEEDS RESPONSE ── -->
+  <div class="section-label">Needs Response / Decision</div>
+  <div class="card">
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">PTS fee in Citi renegotiation — Jeff / Nathan / Linus decide before Thursday</span></div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">IVE supply allocation (Citi vs. HSBC) — Rachael owns; flag if she needs exec air cover</span></div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Travelers EBR deck owner — Linus to designate before end of week</span></div>
+    <div class="check-item"><div class="cb"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">Citi tiger team Thursday slot reschedule — Linus owns; Jeff to confirm core attendees</span></div>
+  </div>
+
+  <!-- ── APPROVALS ── -->
+  <div class="section-label">Approvals</div>
+  <div class="card">
+    <div class="subsection"><h4>Tipalti</h4><div class="reminder">None pending</div></div>
+    <div class="subsection"><h4>Expensify</h4><div class="reminder">None pending — most recent report approved and reimbursed March 2026</div></div>
+    <div class="subsection"><h4>DocuSign</h4><div class="reminder">None pending — last completed docs were consultant agreements in March 2026</div></div>
+  </div>
+
+  <!-- ── REMINDERS ── -->
+  <div class="section-label">Reminders / FYIs</div>
+  <div class="card">
+    <div class="reminder">Amanda is in Seattle Monday–Wednesday (April 6–8)</div>
+    <div class="reminder">Easter Break runs through April 7 — some team members may be out</div>
+    <div class="reminder">Citi contract exhaustion: <strong>May 15</strong> — Thursday Rahul call is the moment to act</div>
+    <div class="reminder">Duolingo NYC lunch: <strong>April 28</strong> — Steve Bagby invite needs to go out this week</div>
+    <div class="reminder">Travelers EBR: <strong>first week of May</strong> — deck owner must be named this week</div>
+    <div class="reminder">HSBC late cancel automated solution target: <strong>April 15</strong> — confirm on track</div>
+  </div>
+
+</div>
+
+<footer>Karat · Chief of Staff OS · Updated April 5, 2026</footer>
+
+<script>
+  document.querySelectorAll('.check-item').forEach(item => {
+    item.addEventListener('click', () => {
+      item.classList.toggle('done');
+    });
+  });
+</script>
+
+</body>
+</html>
